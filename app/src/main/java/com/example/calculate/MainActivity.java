@@ -137,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     str = "";
                 } else {
                     str = str.substring(0, str.length() - 1);
-                    if(isNum(str.indexOf(str.length()))){
+                    if(isNum(str.charAt(str.length()-1))){
                         isOperationFirstClicked=true;       //如果删除后的最后一位是数字，接着才可以输入运算符
                     }else {
                         isOperationFirstClicked=false;
