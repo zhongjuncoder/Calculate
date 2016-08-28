@@ -140,11 +140,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     str = "";
                 } else {
                     str = str.substring(0, str.length() - 1);
-                    if (isNum(str.charAt(str.length() - 1))) {
-                        isOperationFirstClicked = true;       //如果删除后的最后一位是数字，接着才可以输入运算符
-                    } else {
-                        isOperationFirstClicked = false;
-                    }
+                    isOperationFirstClicked = isNum(str.charAt(str.length() - 1));       //如果删除后的最后一位是数字，接着才可以输入运算符
                 }
                 mEditText2.setText(str);
                 break;
@@ -473,7 +469,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             BigDecimal b2 = new BigDecimal(Double.toString(d2));
             return b1.multiply(b2).doubleValue();
         }
-
+        
     }
 
 }
