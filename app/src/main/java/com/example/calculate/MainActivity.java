@@ -2,9 +2,10 @@ package com.example.calculate;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.math.BigDecimal;
@@ -18,8 +19,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button[] numberBtns = new Button[numberIds.length];
     private Button[] operationBtns = new Button[operationIds.length];
     private String str = "";
-    private EditText mEditText1;        //显示表达式
-    private EditText mEditText2;        //显示计算结果
+    private TextView mEditText1;        //显示表达式
+    private TextView mEditText2;        //显示计算结果
     private static double op1 = 0, op2 = 0;
     private static ArrayList<String> exp = new ArrayList<>();
     private static Stack<Object> calcStack = new Stack<>();//用于存储逆波兰表达式
@@ -31,8 +32,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mEditText1 = (EditText) findViewById(R.id.edit1);
-        mEditText2 = (EditText) findViewById(R.id.edit2);
+        mEditText1 = (TextView) findViewById(R.id.edit1);
+        mEditText2 = (TextView) findViewById(R.id.edit2);
+        mEditText1.setMovementMethod(ScrollingMovementMethod.getInstance());
+        mEditText2.setMovementMethod(ScrollingMovementMethod.getInstance());
         for (int i = 0; i < numberIds.length; i++) {
             numberBtns[i] = (Button) findViewById(numberIds[i]);
             numberBtns[i].setOnClickListener(this);
@@ -133,14 +136,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 calcStack.clear();  //清空栈
                 break;
             case R.id.backspace:
-                if (str == null || str.equals("")) {
+                if (str == null || str.equals("") || str.length() - 1 == 0) {
                     str = "";
                 } else {
                     str = str.substring(0, str.length() - 1);
-                    if(isNum(str.charAt(str.length()-1))){
-                        isOperationFirstClicked=true;       //如果删除后的最后一位是数字，接着才可以输入运算符
-                    }else {
-                        isOperationFirstClicked=false;
+                    if (isNum(str.charAt(str.length() - 1))) {
+                        isOperationFirstClicked = true;       //如果删除后的最后一位是数字，接着才可以输入运算符
+                    } else {
+                        isOperationFirstClicked = false;
                     }
                 }
                 mEditText2.setText(str);
@@ -299,12 +302,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 exp.add(String.valueOf(arr, i, index - i));
                 i = index - 1;                                          //减 1 是因为 for 循环里 i 还会自增 1
-            } else if (isOperator(arr[i])) {                            
+            } else if (isOperator(arr[i])) {
                 if (calcStack.empty())                                  //如果栈为空这运算符直接进栈
                     calcStack.push(arr[i]);
                 else {
                     if (operatorPriority(arr[i]) >= operatorPriority(calcStack.peek()))     //优先级大的进栈
-                        calcStack.push(arr[i]);                         
+                        calcStack.push(arr[i]);
                     else {
                         for (int j = 1; j <= calcStack.size(); j++)     //优先级小的先把栈顶的运算符出栈添加到后缀表达式中，然后再进栈
                             exp.add(calcStack.pop().toString());
@@ -373,7 +376,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             Toast.makeText(MainActivity.this, "除数不能为0，请重新输入", Toast.LENGTH_SHORT).show();
                             str = "";
                         } else {
-                            temp = arith.divi(op2, op1);
+                            temp = op2 / op1;
                         }
                         break;
                     case "%":
@@ -383,7 +386,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         temp = Math.pow(op2, op1);
                         break;
                     case "!":
-                        
                         //判断是否是小数，如果是小数则不能求阶乘
                         String s = String.valueOf(op1);
                         boolean isDecimal = false;
@@ -470,12 +472,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             BigDecimal b1 = new BigDecimal(Double.toString(d1));
             BigDecimal b2 = new BigDecimal(Double.toString(d2));
             return b1.multiply(b2).doubleValue();
-        }
-
-        public double divi(double d1, double d2) {
-            BigDecimal b1 = new BigDecimal(Double.toString(d1));
-            BigDecimal b2 = new BigDecimal(Double.toString(d2));
-            return b1.divide(b2).doubleValue();
         }
 
     }

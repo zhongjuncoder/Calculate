@@ -11,7 +11,7 @@
     <LinearLayout
         style="@style/layoutStyle">
 
-        <EditText
+        <TextView
             android:id="@+id/edit1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -20,15 +20,16 @@
             android:color="#808080"
             android:enabled="false"
             android:gravity="end"
-            android:inputType="numberDecimal"
             android:textColor="#770000ff"
             android:textSize="24sp"/>
     </LinearLayout>
 
+    
     <LinearLayout
         style="@style/layoutStyle">
-
-        <EditText
+        
+       
+        <TextView
             android:id="@+id/edit2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -36,11 +37,12 @@
             android:background="@null"
             android:enabled="false"
             android:gravity="end"
-            android:inputType="numberDecimal"
             android:textColor="#770000ff"
-            android:textSize="24sp"/>
+            android:textSize="24sp"
+            android:ellipsize="end"/>
 
     </LinearLayout>
+
 
     <LinearLayout
        style="@style/layoutStyle">
