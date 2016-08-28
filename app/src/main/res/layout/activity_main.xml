@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp"
+    tools:context="com.example.calculate.MainActivity">
+
+    <LinearLayout
+        style="@style/layoutStyle">
+
+        <EditText
+            android:id="@+id/edit1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="fill_horizontal"
+            android:background="@null"
+            android:color="#808080"
+            android:enabled="false"
+            android:gravity="end"
+            android:inputType="numberDecimal"
+            android:textColor="#770000ff"
+            android:textSize="24sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/layoutStyle">
+
+        <EditText
+            android:id="@+id/edit2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="fill_horizontal"
+            android:background="@null"
+            android:enabled="false"
+            android:gravity="end"
+            android:inputType="numberDecimal"
+            android:textColor="#770000ff"
+            android:textSize="24sp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+       style="@style/layoutStyle">
+
+        <Button
+            android:id="@+id/zuo"
+            style="@style/myStyle"
+            android:text="@string/zuo"/>
+
+        <Button
+            android:id="@+id/you"
+            style="@style/myStyle"
+            android:text="@string/you"/>
+
+        <Button
+            android:id="@+id/square"
+            style="@style/myStyle"
+            android:text="@string/square"
+            />
+
+        <Button
+            android:id="@+id/extract"
+            style="@style/myStyle"
+            android:text="@string/extract"/>
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/layoutStyle">
+
+        <Button
+            android:id="@+id/clear"
+            style="@style/myStyle"
+            android:text="@string/c"/>
+
+        <Button
+            android:id="@+id/backspace"
+            style="@style/myStyle"
+            android:text="@string/arrow"/>
+
+        <Button
+            android:id="@+id/jie"
+            style="@style/myStyle"
+            android:text="@string/jiecheng"
+            />
+
+        <Button
+            android:id="@+id/mode"
+            style="@style/myStyle"
+            android:text="@string/mode"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/layoutStyle">
+
+        <Button
+            android:id="@+id/seven"
+            style="@style/myStyle"
+            android:text="@string/seven"/>
+
+        <Button
+            android:id="@+id/eight"
+            style="@style/myStyle"
+            android:text="@string/eight"/>
+
+        <Button
+            android:id="@+id/nine"
+            style="@style/myStyle"
+            android:text="@string/nine"/>
+
+        <Button
+            android:id="@+id/div"
+            style="@style/myStyle"
+            android:text="@string/div"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        style="@style/layoutStyle">
+
+        <Button
+            android:id="@+id/four"
+            style="@style/myStyle"
+            android:text="@string/four"/>
+
+        <Button
+            android:id="@+id/five"
+            style="@style/myStyle"
+            android:text="@string/five"/>
+
+        <Button
+            android:id="@+id/six"
+            style="@style/myStyle"
+            android:text="@string/six"/>
+
+        <Button
+            android:id="@+id/mul"
+            style="@style/myStyle"
+            android:text="@string/mul"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        style="@style/layoutStyle">
+
+        <Button
+            android:id="@+id/one"
+            style="@style/myStyle"
+            android:text="@string/one"/>
+
+        <Button
+            android:id="@+id/two"
+            style="@style/myStyle"
+            android:text="@string/two"/>
+
+        <Button
+            android:id="@+id/three"
+            style="@style/myStyle"
+            android:text="@string/three"/>
+
+        <Button
+            android:id="@+id/minus"
+            style="@style/myStyle"
+            android:text="@string/minus"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        style="@style/layoutStyle">
+
+        <Button
+            android:id="@+id/zero"
+            style="@style/myStyle"
+            android:text="@string/zero"/>
+
+        <Button
+            android:id="@+id/dot"
+            style="@style/myStyle"
+            android:text="@string/dot"/>
+
+        <Button
+            android:id="@+id/equal"
+            style="@style/myStyle"
+            android:text="@string/equal"/>
+
+        <Button
+            android:id="@+id/plus"
+            style="@style/myStyle"
+            android:text="@string/plus"/>
+    </LinearLayout>
+</LinearLayout>
