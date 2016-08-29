@@ -241,11 +241,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case '%':
                 return 2;
             case '^':
-                return 3;
-            case '√':
-                return 3;
-            case '!':
                 return 4;
+            case '√':
+                return 4;
+            case '!':
+                return 3;
             default:
                 return 0;
         }
@@ -383,7 +383,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                     case "!":
                         //判断是否是小数，如果是小数则不能求阶乘
-                        String s = String.valueOf(op1);
+                        /*String s = String.valueOf(op1);
                         boolean isDecimal = false;
                         for (int i = 0; i < s.length(); i++) {
                             if (s.contains(".")) {
@@ -394,13 +394,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             } else {
                                 isDecimal = false;
                             }
-                        }
+                        }*/
+                        boolean isInteger = op1 % 1 == 0;
                         if (op1 <= 0) {
                             Toast.makeText(MainActivity.this, "非正整数无法求阶乘,请重新输入", Toast.LENGTH_SHORT).show();
                             str = "";
                             break;
-                        } else if (isDecimal) {
+                        } else if (!isInteger) {
                             Toast.makeText(MainActivity.this, "非正整数无法求阶乘，请重新输入", Toast.LENGTH_SHORT).show();
+                            str = "";
+                            break;
+                        } else if (op1 >= 170) {
+                            Toast.makeText(MainActivity.this, "要求运算的结果太大，脑子算不过来啦，请重新输入", Toast.LENGTH_SHORT).show();
                             str = "";
                             break;
                         } else if (op2 == 0) {
@@ -412,7 +417,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             }
                             temp = res;
                             break;
-                        } else if (op2 != 0) {          //如果op2不为空的话则需要先把op2进栈再把运算结果进栈
+                        } else {          //如果op2不为空的话则需要先把op2进栈再把运算结果进栈
                             double x = 1;
                             double res = 1;
                             for (int i = 0; i < op1; i++) {
@@ -469,7 +474,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             BigDecimal b2 = new BigDecimal(Double.toString(d2));
             return b1.multiply(b2).doubleValue();
         }
-        
+
     }
 
 }
