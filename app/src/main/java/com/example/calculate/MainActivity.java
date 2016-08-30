@@ -3,6 +3,7 @@ package com.example.calculate;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -12,6 +13,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Stack;
 
+
+/*
+    尚未解决的问题：6√4，2(2+1)
+ */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private int[] numberIds = new int[]{R.id.zero, R.id.one, R.id.two, R.id.three, R.id.four, R.id.five, R.id.six, R.id.seven, R.id.eight, R.id.nine, R.id.dot};
@@ -19,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button[] numberBtns = new Button[numberIds.length];
     private Button[] operationBtns = new Button[operationIds.length];
     private String str = "";
+    private static final String INFINITY = "Infinity";
     private TextView mEditText1;        //显示表达式
     private TextView mEditText2;        //显示计算结果
     private static double op1 = 0, op2 = 0;
@@ -201,8 +207,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 try {
                     transfer(str);
                     result = compute();
+                    if (String.valueOf(result).equals(INFINITY)) {
+                        Toast.makeText(MainActivity.this, "结果太大，脑子算不过来啦", Toast.LENGTH_SHORT).show();
+                        isOperationFirstClicked = true;
+                        mEditText2.setText("");
+                        mEditText1.setText("");
+                        str = "";
+                        exp.clear();
+                    }
                     //如果输入有误的话让str=""，接着就初始化，让用户重新输入
-                    if (str.equals("")) {
+                    else if (str.equals("")) {
                         isOperationFirstClicked = true;
                         mEditText2.setText("");
                         mEditText1.setText("");
@@ -299,8 +313,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 exp.add(String.valueOf(arr, i, index - i));
                 i = index - 1;                                          //减 1 是因为 for 循环里 i 还会自增 1
             } else if (isOperator(arr[i])) {
-                if (calcStack.empty())                                  //如果栈为空这运算符直接进栈
+                if (calcStack.empty()) {                             //如果栈为空这运算符直接进栈
                     calcStack.push(arr[i]);
+                    Log.d("calcStack",calcStack.peek().toString());
+                }
                 else {
                     if (operatorPriority(arr[i]) >= operatorPriority(calcStack.peek()))     //优先级大的进栈
                         calcStack.push(arr[i]);
@@ -351,7 +367,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 calcStack.push(atom);                   //如果是数字则直接进栈
             else if (isOperator(atom)) {
                 op1 = Double.parseDouble(calcStack.pop().toString());
-                if (calcStack.isEmpty()) {              //如果出栈一个数后，栈为空（比如输入3！时），则把op2设为0，否则可能会抛出空栈异常
+                if (calcStack.isEmpty()) {              //如果出栈一个数后，栈为空（比如输入3！时），则把op2设为0，否则会抛出空栈异常
                     op2 = 0;
                 } else {
                     op2 = Double.parseDouble(calcStack.pop().toString());
@@ -382,19 +398,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         temp = Math.pow(op2, op1);
                         break;
                     case "!":
-                        //判断是否是小数，如果是小数则不能求阶乘
-                        /*String s = String.valueOf(op1);
-                        boolean isDecimal = false;
-                        for (int i = 0; i < s.length(); i++) {
-                            if (s.contains(".")) {
-                                int j = s.indexOf(".") + 1;
-                                if (s.charAt(j) == '1' || s.charAt(j) == '2' || s.charAt(j) == '3' || s.charAt(j) == '4' || s.charAt(j) == '5' || s.charAt(j) == '6' || s.charAt(j) == '7' || s.charAt(j) == '8' || s.charAt(j) == '9') {
-                                    isDecimal = true;
-                                }
-                            } else {
-                                isDecimal = false;
-                            }
-                        }*/
+                        //判断是否是小数，如果是小数则不能求阶
                         boolean isInteger = op1 % 1 == 0;
                         if (op1 <= 0) {
                             Toast.makeText(MainActivity.this, "非正整数无法求阶乘,请重新输入", Toast.LENGTH_SHORT).show();
