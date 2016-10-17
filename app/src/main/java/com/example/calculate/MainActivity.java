@@ -3,7 +3,6 @@ package com.example.calculate;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,22 +13,19 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 
-/*
-    尚未解决的问题：6√4，2(2+1)
- */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private int[] numberIds = new int[]{R.id.zero, R.id.one, R.id.two, R.id.three, R.id.four, R.id.five, R.id.six, R.id.seven, R.id.eight, R.id.nine, R.id.dot};
     private int[] operationIds = new int[]{R.id.plus, R.id.minus, R.id.mul, R.id.div, R.id.mode, R.id.equal, R.id.clear, R.id.backspace, R.id.square, R.id.zuo, R.id.you, R.id.extract, R.id.jie};
     private Button[] numberBtns = new Button[numberIds.length];
     private Button[] operationBtns = new Button[operationIds.length];
-    private String str = "";
+    private String str = "";                                    //保存输入的字符
     private static final String INFINITY = "Infinity";
     private TextView mEditText1;        //显示表达式
     private TextView mEditText2;        //显示计算结果
-    private static double op1 = 0, op2 = 0;
-    private static ArrayList<String> exp = new ArrayList<>();
-    private static Stack<Object> calcStack = new Stack<>();//用于存储逆波兰表达式
+    private static double num1 = 0, num2 = 0;
+    private static ArrayList<String> exp = new ArrayList<>();   //用于存储逆波兰表达式
+    private static Stack<Object> calcStack = new Stack<>();     //用于转化逆波兰时存储操作符，优先级小的操作符进栈，计算时存储数字，遇到操作符把栈顶两个数字弹出计算，再把结果进栈
     private double result;
     private boolean isOperationFirstClicked = true;     //防止连续输入运算符
 
@@ -110,9 +106,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 mEditText2.setText(str);
                 break;
             case R.id.zuo:
-                str += "(";
-                mEditText2.setText(str);
-                isOperationFirstClicked = true;
+                //如果前一个是数字则在输入左括号之前输入*号
+                if (!str.isEmpty() && isNum(str.charAt(str.length() - 1))) {
+                    str += "*(";
+                    mEditText2.setText(str);
+                    isOperationFirstClicked = true;
+                } else {
+                    str += "(";
+                    mEditText2.setText(str);
+                    isOperationFirstClicked = true;
+                }
                 break;
             case R.id.you:
                 str += ")";
@@ -129,9 +132,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
             case R.id.extract:
-                str += "√";
-                isOperationFirstClicked = false;
-                mEditText2.setText(str);
+                if (!str.isEmpty() && isNum(str.charAt(str.length() - 1))) {
+                    str += "*√";
+                    mEditText2.setText(str);
+                    isOperationFirstClicked = true;
+                } else {
+                    str += "√";
+                    isOperationFirstClicked = false;
+                    mEditText2.setText(str);
+                }
                 break;
             case R.id.clear:
                 str = "";
@@ -298,7 +307,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //把中缀表达式转化为后缀表达式
     public static void transfer(String expression) {
         char[] arr = expression.toCharArray();
-
+        //如果第一个输入的是下面的操作符则把表达式清空
+        String[] operator = {"+", "*", "/", "%", "^", "!"};
+        for (String s : operator) {
+            if (s.equals(String.valueOf(arr[0]))) {
+                arr = new char[0];
+            }
+        }
         for (int i = 0; i < arr.length; i++) {
             if (isNum(arr[i]) || (i == 0 && arr[i] == '-')) {
             /*
@@ -315,9 +330,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else if (isOperator(arr[i])) {
                 if (calcStack.empty()) {                             //如果栈为空这运算符直接进栈
                     calcStack.push(arr[i]);
-                    Log.d("calcStack",calcStack.peek().toString());
-                }
-                else {
+                } else {
                     if (operatorPriority(arr[i]) >= operatorPriority(calcStack.peek()))     //优先级大的进栈
                         calcStack.push(arr[i]);
                     else {
@@ -348,6 +361,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             }
         }
+
         if (!calcStack.empty()) {                                          //如果最后栈不为空则依次出栈添加到后缀表达式中 
             int len = calcStack.size();
             for (int i = 0; i < len; i++)
@@ -355,8 +369,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
     public double compute() {
         double temp = 0;
+        //解决double计算溢出的方法
         Arith arith = new Arith();
         //如果表达式为空则返回0，否则多次按“=”会崩溃
         if (exp.isEmpty()) {
@@ -366,41 +382,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (isNum(atom))
                 calcStack.push(atom);                   //如果是数字则直接进栈
             else if (isOperator(atom)) {
-                op1 = Double.parseDouble(calcStack.pop().toString());
+                num1 = Double.parseDouble(calcStack.pop().toString());
                 if (calcStack.isEmpty()) {              //如果出栈一个数后，栈为空（比如输入3！时），则把op2设为0，否则会抛出空栈异常
-                    op2 = 0;
+                    num2 = 0;
                 } else {
-                    op2 = Double.parseDouble(calcStack.pop().toString());
+                    num2 = Double.parseDouble(calcStack.pop().toString());
                 }
 
                 switch (atom) {
                     case "+":
-                        temp = arith.add(op1, op2);
+                        temp = arith.add(num1, num2);
                         break;
                     case "-":
-                        temp = arith.sub(op2, op1);
+                        temp = arith.sub(num2, num1);
                         break;
                     case "*":
-                        temp = arith.mul(op1, op2);
+                        temp = arith.mul(num1, num2);
                         break;
                     case "/":
-                        if (op1 == 0) {
+                        if (num1 == 0) {
                             Toast.makeText(MainActivity.this, "除数不能为0，请重新输入", Toast.LENGTH_SHORT).show();
                             str = "";
                         } else {
-                            temp = op2 / op1;
+                            temp = num2 / num1;
                         }
                         break;
                     case "%":
-                        temp = op2 % op1;
+                        temp = num2 % num1;
                         break;
                     case "^":
-                        temp = Math.pow(op2, op1);
+                        temp = Math.pow(num2, num1);
                         break;
                     case "!":
                         //判断是否是小数，如果是小数则不能求阶
-                        boolean isInteger = op1 % 1 == 0;
-                        if (op1 <= 0) {
+                        boolean isInteger = num1 % 1 == 0;
+                        if (num1 <= 0) {
                             Toast.makeText(MainActivity.this, "非正整数无法求阶乘,请重新输入", Toast.LENGTH_SHORT).show();
                             str = "";
                             break;
@@ -408,14 +424,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             Toast.makeText(MainActivity.this, "非正整数无法求阶乘，请重新输入", Toast.LENGTH_SHORT).show();
                             str = "";
                             break;
-                        } else if (op1 >= 170) {
+                        } else if (num1 >= 170) {
                             Toast.makeText(MainActivity.this, "要求运算的结果太大，脑子算不过来啦，请重新输入", Toast.LENGTH_SHORT).show();
                             str = "";
                             break;
-                        } else if (op2 == 0) {
+                        } else if (num2 == 0) {
                             double x = 1;
                             double res = 1;
-                            for (int i = 0; i < op1; i++) {
+                            for (int i = 0; i < num1; i++) {
                                 res *= x;
                                 x++;
                             }
@@ -424,25 +440,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         } else {          //如果op2不为空的话则需要先把op2进栈再把运算结果进栈
                             double x = 1;
                             double res = 1;
-                            for (int i = 0; i < op1; i++) {
+                            for (int i = 0; i < num1; i++) {
                                 res *= x;
                                 x++;
                             }
                             temp = res;
-                            calcStack.push(op2);
+                            calcStack.push(num2);
                             break;
                         }
                     case "√":
-                        if (op1 < 0) {
+                        if (num1 < 0) {
                             Toast.makeText(MainActivity.this, "负数无法求算数平方根,请重新输入", Toast.LENGTH_SHORT).show();
                             str = "";
                             break;
                         } else {
-                            if (op2 == 0) {
-                                temp = Math.sqrt(op1);
+                            if (num2 == 0) {
+                                temp = Math.sqrt(num1);
                             } else {
-                                temp = Math.sqrt(op1);
-                                calcStack.push(op2);
+                                temp = Math.sqrt(num1);
+                                calcStack.push(num2);
                             }
                             break;
                         }

@@ -21,7 +21,8 @@
             android:enabled="false"
             android:gravity="end"
             android:textColor="#770000ff"
-            android:textSize="24sp"/>
+            android:textSize="24sp"
+            android:maxLines="2"/>
     </LinearLayout>
 
     
@@ -39,7 +40,8 @@
             android:gravity="end"
             android:textColor="#770000ff"
             android:textSize="24sp"
-            android:ellipsize="end"/>
+            android:ellipsize="end"
+            android:maxLines="2"/>
 
     </LinearLayout>
 
